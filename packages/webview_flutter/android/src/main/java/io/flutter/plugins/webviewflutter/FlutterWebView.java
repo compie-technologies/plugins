@@ -65,7 +65,6 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
 
       final WebView newWebView = new WebView(view.getContext());
       newWebView.setWebViewClient(webViewClient);
-//      newWebView.getSettings().setDefaultFixedFontSize(16);
 
       final WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
       transport.setWebView(newWebView);
@@ -96,9 +95,9 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     webView.getSettings().setDomStorageEnabled(true);
     webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 
+    // Setting webview default font size to 16 -> disabling accessability feature!
     webView.getSettings().setDefaultFixedFontSize(16);
     webView.getSettings().setTextZoom(100);
-//    webView.getSettings().setInitialScale(1);
 
     // Multi windows is set with FlutterWebChromeClient by default to handle internal bug: b/159892679.
     webView.getSettings().setSupportMultipleWindows(true);

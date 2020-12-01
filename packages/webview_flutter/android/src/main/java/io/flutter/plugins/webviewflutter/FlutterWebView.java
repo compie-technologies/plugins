@@ -74,6 +74,14 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     }
   }
 
+  @Override
+  protected void attachBaseContext(Context newBase) {
+    super.attachBaseContext(newBase);
+    final Configuration override = new Configuration(newBase.getResources().getConfiguration());
+    override.fontScale = 1.0f;
+    applyOverrideConfiguration(override);
+  }
+
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
   @SuppressWarnings("unchecked")
   FlutterWebView(

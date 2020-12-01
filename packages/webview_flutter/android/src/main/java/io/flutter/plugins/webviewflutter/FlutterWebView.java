@@ -96,6 +96,7 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 
     webView.getSettings().setDefaultFixedFontSize(16);
+    webView.getSettings().setTextZoom(100);
 
     // Multi windows is set with FlutterWebChromeClient by default to handle internal bug: b/159892679.
     webView.getSettings().setSupportMultipleWindows(true);

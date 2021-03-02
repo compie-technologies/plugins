@@ -13,7 +13,7 @@ class FakeVersionInfoQuerier implements VersionInfoQuerier {
 
   final Map<String, String> responses;
 
-  getStringValue(Pointer<Uint8>? versionInfo, key) => responses[key];
+  getStringValue(Pointer<Uint8> versionInfo, key) => responses[key];
 }
 
 void main() {
@@ -40,11 +40,8 @@ void main() {
       'ProductName': 'Amazing App',
     });
     final path = await pathProvider.getApplicationSupportPath();
-    expect(path, isNotNull);
-    if (path != null) {
-      expect(path, endsWith(r'AppData\Roaming\A Company\Amazing App'));
-      expect(Directory(path).existsSync(), isTrue);
-    }
+    expect(path, endsWith(r'AppData\Roaming\A Company\Amazing App'));
+    expect(Directory(path).existsSync(), isTrue);
   }, skip: !Platform.isWindows);
 
   test('getApplicationSupportPath with missing company', () async {
@@ -53,11 +50,8 @@ void main() {
       'ProductName': 'Amazing App',
     });
     final path = await pathProvider.getApplicationSupportPath();
-    expect(path, isNotNull);
-    if (path != null) {
-      expect(path, endsWith(r'AppData\Roaming\Amazing App'));
-      expect(Directory(path).existsSync(), isTrue);
-    }
+    expect(path, endsWith(r'AppData\Roaming\Amazing App'));
+    expect(Directory(path).existsSync(), isTrue);
   }, skip: !Platform.isWindows);
 
   test('getApplicationSupportPath with problematic values', () async {
@@ -67,15 +61,12 @@ void main() {
       'ProductName': r'A"/Terrible\|App?*Name',
     });
     final path = await pathProvider.getApplicationSupportPath();
-    expect(path, isNotNull);
-    if (path != null) {
-      expect(
-          path,
-          endsWith(r'AppData\Roaming\'
-              r'A _Bad_ Company_ Name\'
-              r'A__Terrible__App__Name'));
-      expect(Directory(path).existsSync(), isTrue);
-    }
+    expect(
+        path,
+        endsWith(r'AppData\Roaming\'
+            r'A _Bad_ Company_ Name\'
+            r'A__Terrible__App__Name'));
+    expect(Directory(path).existsSync(), isTrue);
   }, skip: !Platform.isWindows);
 
   test('getApplicationSupportPath with a completely invalid company', () async {
@@ -85,11 +76,8 @@ void main() {
       'ProductName': r'Amazing App',
     });
     final path = await pathProvider.getApplicationSupportPath();
-    expect(path, isNotNull);
-    if (path != null) {
-      expect(path, endsWith(r'AppData\Roaming\Amazing App'));
-      expect(Directory(path).existsSync(), isTrue);
-    }
+    expect(path, endsWith(r'AppData\Roaming\Amazing App'));
+    expect(Directory(path).existsSync(), isTrue);
   }, skip: !Platform.isWindows);
 
   test('getApplicationSupportPath with very long app name', () async {

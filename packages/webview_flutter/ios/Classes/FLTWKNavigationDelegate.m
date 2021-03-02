@@ -104,13 +104,4 @@
                        withError:(NSError *)error {
   [self onWebResourceError:error];
 }
-
-- (void)webViewWebContentProcessDidTerminate:(WKWebView *)webView {
-  NSError *contentProcessTerminatedError =
-      [[NSError alloc] initWithDomain:WKErrorDomain
-                                 code:WKErrorWebContentProcessTerminated
-                             userInfo:nil];
-  [self onWebResourceError:contentProcessTerminatedError];
-}
-
 @end

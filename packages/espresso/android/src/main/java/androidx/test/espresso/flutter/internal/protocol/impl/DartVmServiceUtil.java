@@ -71,7 +71,6 @@ public final class DartVmServiceUtil {
   }
 
   /** Gets the Dart executor for the given {@code flutterView}. */
-  @SuppressWarnings("deprecation")
   public static DartExecutor getDartExecutor(View flutterView) {
     checkNotNull(flutterView, "The Flutter View instance cannot be null.");
     // Flutter's embedding is in the phase of rewriting/refactoring. Let's be compatible with both

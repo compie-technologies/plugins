@@ -256,8 +256,9 @@ class GoogleMapController {
 
   /// Returns the [LatLng] for a `screenCoordinate` (in pixels) of the viewport.
   Future<LatLng> getLatLng(ScreenCoordinate screenCoordinate) async {
-    final gmaps.LatLng latLng =
-        _pixelToLatLng(_googleMap, screenCoordinate.x, screenCoordinate.y);
+    final latLng = _googleMap.projection.fromPointToLatLng(
+      gmaps.Point(screenCoordinate.x, screenCoordinate.y),
+    );
     return _gmLatLngToLatLng(latLng);
   }
 

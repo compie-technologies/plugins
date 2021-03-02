@@ -130,7 +130,6 @@ public final class EspressoFlutter {
       return this;
     }
 
-    @SuppressWarnings("unchecked")
     private <T> T performInternal(FlutterAction<T> flutterAction) {
       checkNotNull(
           flutterAction,

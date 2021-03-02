@@ -11,17 +11,14 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 
-final pathPrefix =
-    Directory.current.path.endsWith('test') ? './assets/' : './test/assets/';
-final path = pathPrefix + 'hello.txt';
 final String expectedStringContents = 'Hello, world!';
-final Uint8List bytes = Uint8List.fromList(utf8.encode(expectedStringContents));
-final File textFile = File(path);
+final Uint8List bytes = utf8.encode(expectedStringContents);
+final File textFile = File('./assets/hello.txt');
 final String textFilePath = textFile.path;
 
 void main() {
   group('Create with an objectUrl', () {
-    final PickedFile pickedFile = PickedFile(textFilePath);
+    final pickedFile = PickedFile(textFilePath);
 
     test('Can be read as a string', () async {
       expect(await pickedFile.readAsString(), equals(expectedStringContents));

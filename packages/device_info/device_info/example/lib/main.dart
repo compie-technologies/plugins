@@ -12,9 +12,9 @@ import 'package:flutter/services.dart';
 import 'package:device_info/device_info.dart';
 
 void main() {
-  runZonedGuarded(() {
+  runZoned(() {
     runApp(MyApp());
-  }, (dynamic error, dynamic stack) {
+  }, onError: (dynamic error, dynamic stack) {
     print(error);
     print(stack);
   });
@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> initPlatformState() async {
-    Map<String, dynamic> deviceData = <String, dynamic>{};
+    Map<String, dynamic> deviceData;
 
     try {
       if (Platform.isAndroid) {

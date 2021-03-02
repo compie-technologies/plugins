@@ -61,17 +61,12 @@ Future<Map<String, dynamic>> _runTest(String scriptPath) async {
   final String testResults = (await process.stdout
           .transform(utf8.decoder)
           .expand((String text) => text.split('\n'))
-          .map<dynamic>((String line) {
+          .map((String line) {
             try {
               return jsonDecode(line);
             } on FormatException {
               // Only interested in test events which are JSON.
             }
-          })
-          .expand<Map<String, dynamic>>((dynamic json) {
-            return json is List<dynamic>
-                ? json.cast()
-                : <Map<String, dynamic>>[json as Map<String, dynamic>];
           })
           .where((dynamic testEvent) =>
               testEvent != null && testEvent['type'] == 'print')

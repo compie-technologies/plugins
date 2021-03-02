@@ -15,20 +15,15 @@ import 'package:http/http.dart' as http;
 /// client that can be used with the rest of the `googleapis` libraries.
 extension GoogleApisGoogleSignInAuth on GoogleSignIn {
   /// Retrieve a `googleapis` authenticated client.
-  Future<googleapis_auth.AuthClient?> authenticatedClient({
-    @visibleForTesting GoogleSignInAuthentication? debugAuthentication,
-    @visibleForTesting List<String>? debugScopes,
+  Future<googleapis_auth.AuthClient> authenticatedClient({
+    @visibleForTesting GoogleSignInAuthentication debugAuthentication,
+    @visibleForTesting List<String> debugScopes = const [],
   }) async {
-    final GoogleSignInAuthentication? auth =
-        debugAuthentication ?? await currentUser?.authentication;
-    final String? oathTokenString = auth?.accessToken;
-    if (oathTokenString == null) {
-      return null;
-    }
+    final auth = debugAuthentication ?? await currentUser.authentication;
     final credentials = googleapis_auth.AccessCredentials(
       googleapis_auth.AccessToken(
         'Bearer',
-        oathTokenString,
+        auth.accessToken,
         // We don't know when the token expires, so we assume "never"
         DateTime.now().toUtc().add(Duration(days: 365)),
       ),

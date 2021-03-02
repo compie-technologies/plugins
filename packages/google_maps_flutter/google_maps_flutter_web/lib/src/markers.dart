@@ -38,14 +38,10 @@ class MarkersController extends GeometryController {
     gmaps.InfoWindow gmInfoWindow;
 
     if (infoWindowOptions != null) {
-      gmInfoWindow = gmaps.InfoWindow(infoWindowOptions);
-      // Google Maps' JS SDK does not have a click event on the InfoWindow, so
-      // we make one...
-      if (infoWindowOptions.content is HtmlElement) {
-        infoWindowOptions.content.onClick.listen((_) {
+      gmInfoWindow = gmaps.InfoWindow(infoWindowOptions)
+        ..addListener('click', () {
           _onInfoWindowTap(marker.markerId);
         });
-      }
     }
 
     final currentMarker = _markerIdToController[marker.markerId]?.marker;
@@ -105,7 +101,6 @@ class MarkersController extends GeometryController {
   ///
   /// See also [hideMarkerInfoWindow] and [isInfoWindowShown].
   void showMarkerInfoWindow(MarkerId markerId) {
-    _hideAllMarkerInfoWindow();
     MarkerController markerController = _markerIdToController[markerId];
     markerController?.showInfoWindow();
   }
@@ -145,12 +140,5 @@ class MarkersController extends GeometryController {
       _gmLatLngToLatLng(latLng),
       markerId,
     ));
-  }
-
-  void _hideAllMarkerInfoWindow() {
-    _markerIdToController.values
-        .where((controller) =>
-            controller == null ? false : controller.infoWindowShown)
-        .forEach((controller) => controller.hideInfoWindow());
   }
 }

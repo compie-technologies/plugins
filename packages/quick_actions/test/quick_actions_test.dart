@@ -10,7 +10,7 @@ import 'package:quick_actions/quick_actions.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  late QuickActions quickActions;
+  QuickActions quickActions;
   final List<MethodCall> log = <MethodCall>[];
 
   setUp(() {

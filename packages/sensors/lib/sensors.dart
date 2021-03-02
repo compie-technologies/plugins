@@ -121,50 +121,38 @@ GyroscopeEvent _listToGyroscopeEvent(List<double> list) {
   return GyroscopeEvent(list[0], list[1], list[2]);
 }
 
-Stream<AccelerometerEvent>? _accelerometerEvents;
-Stream<GyroscopeEvent>? _gyroscopeEvents;
-Stream<UserAccelerometerEvent>? _userAccelerometerEvents;
+Stream<AccelerometerEvent> _accelerometerEvents;
+Stream<GyroscopeEvent> _gyroscopeEvents;
+Stream<UserAccelerometerEvent> _userAccelerometerEvents;
 
 /// A broadcast stream of events from the device accelerometer.
 Stream<AccelerometerEvent> get accelerometerEvents {
-  Stream<AccelerometerEvent>? accelerometerEvents = _accelerometerEvents;
-  if (accelerometerEvents == null) {
-    accelerometerEvents =
-        _accelerometerEventChannel.receiveBroadcastStream().map(
-              (dynamic event) =>
-                  _listToAccelerometerEvent(event.cast<double>()),
-            );
-    _accelerometerEvents = accelerometerEvents;
+  if (_accelerometerEvents == null) {
+    _accelerometerEvents = _accelerometerEventChannel
+        .receiveBroadcastStream()
+        .map(
+            (dynamic event) => _listToAccelerometerEvent(event.cast<double>()));
   }
-
-  return accelerometerEvents;
+  return _accelerometerEvents;
 }
 
 /// A broadcast stream of events from the device gyroscope.
 Stream<GyroscopeEvent> get gyroscopeEvents {
-  Stream<GyroscopeEvent>? gyroscopeEvents = _gyroscopeEvents;
-  if (gyroscopeEvents == null) {
-    gyroscopeEvents = _gyroscopeEventChannel.receiveBroadcastStream().map(
-          (dynamic event) => _listToGyroscopeEvent(event.cast<double>()),
-        );
-    _gyroscopeEvents = gyroscopeEvents;
+  if (_gyroscopeEvents == null) {
+    _gyroscopeEvents = _gyroscopeEventChannel
+        .receiveBroadcastStream()
+        .map((dynamic event) => _listToGyroscopeEvent(event.cast<double>()));
   }
-
-  return gyroscopeEvents;
+  return _gyroscopeEvents;
 }
 
 /// Events from the device accelerometer with gravity removed.
 Stream<UserAccelerometerEvent> get userAccelerometerEvents {
-  Stream<UserAccelerometerEvent>? userAccelerometerEvents =
-      _userAccelerometerEvents;
-  if (userAccelerometerEvents == null) {
-    userAccelerometerEvents =
-        _userAccelerometerEventChannel.receiveBroadcastStream().map(
-              (dynamic event) =>
-                  _listToUserAccelerometerEvent(event.cast<double>()),
-            );
-    _userAccelerometerEvents = userAccelerometerEvents;
+  if (_userAccelerometerEvents == null) {
+    _userAccelerometerEvents = _userAccelerometerEventChannel
+        .receiveBroadcastStream()
+        .map((dynamic event) =>
+            _listToUserAccelerometerEvent(event.cast<double>()));
   }
-
-  return userAccelerometerEvents;
+  return _userAccelerometerEvents;
 }

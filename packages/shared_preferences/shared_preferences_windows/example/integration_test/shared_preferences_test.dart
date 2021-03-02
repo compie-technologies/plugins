@@ -2,15 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// @dart=2.9
-
 import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences_windows/shared_preferences_windows.dart';
-import 'package:integration_test/integration_test.dart';
+import 'package:e2e/e2e.dart';
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  E2EWidgetsFlutterBinding.ensureInitialized();
 
   group('SharedPreferencesWindows', () {
     const Map<String, dynamic> kTestValues = <String, dynamic>{
@@ -39,7 +37,7 @@ void main() {
       preferences.clear();
     });
 
-    testWidgets('reading', (WidgetTester _) async {
+    test('reading', () async {
       final Map<String, Object> values = await preferences.getAll();
       expect(values['String'], isNull);
       expect(values['bool'], isNull);
@@ -48,7 +46,7 @@ void main() {
       expect(values['List'], isNull);
     });
 
-    testWidgets('writing', (WidgetTester _) async {
+    test('writing', () async {
       await Future.wait(<Future<bool>>[
         preferences.setValue(
             'String', 'String', kTestValues2['flutter.String']),
@@ -66,7 +64,7 @@ void main() {
       expect(values['List'], kTestValues2['flutter.List']);
     });
 
-    testWidgets('removing', (WidgetTester _) async {
+    test('removing', () async {
       const String key = 'testKey';
       await preferences.setValue('String', key, kTestValues['flutter.String']);
       await preferences.setValue('Bool', key, kTestValues['flutter.bool']);
@@ -79,7 +77,7 @@ void main() {
       expect(values[key], isNull);
     });
 
-    testWidgets('clearing', (WidgetTester _) async {
+    test('clearing', () async {
       await preferences.setValue(
           'String', 'String', kTestValues['flutter.String']);
       await preferences.setValue('Bool', 'bool', kTestValues['flutter.bool']);

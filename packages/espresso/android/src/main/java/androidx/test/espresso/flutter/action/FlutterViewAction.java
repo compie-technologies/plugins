@@ -32,7 +32,7 @@ import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import io.flutter.embedding.android.FlutterView;
-import io.flutter.embedding.engine.FlutterJNI;
+import io.flutter.view.FlutterNativeView;
 import java.net.URI;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -105,7 +105,7 @@ public final class FlutterViewAction<T> implements ViewAction {
     // The url {@code FlutterNativeView} returns is the http url that the Dart VM Observatory http
     // server serves at. Need to convert to the one that the WebSocket uses.
     URI dartVmServiceProtocolUrl =
-        DartVmServiceUtil.getServiceProtocolUri(FlutterJNI.getObservatoryUri());
+        DartVmServiceUtil.getServiceProtocolUri(FlutterNativeView.getObservatoryUri());
     String isolateId = DartVmServiceUtil.getDartIsolateId(flutterView);
     final FlutterTestingProtocol flutterTestingProtocol =
         new DartVmService(
@@ -199,7 +199,6 @@ public final class FlutterViewAction<T> implements ViewAction {
       return FlutterViewRenderedIdlingResource.class.getSimpleName();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean isIdleNow() {
       boolean isIdle = false;

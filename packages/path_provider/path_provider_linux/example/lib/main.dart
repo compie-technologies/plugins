@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:path_provider_linux/path_provider_linux.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() {
+void main() async {
   runApp(MyApp());
 }
 
@@ -15,11 +15,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String? _tempDirectory = 'Unknown';
-  String? _downloadsDirectory = 'Unknown';
-  String? _appSupportDirectory = 'Unknown';
-  String? _documentsDirectory = 'Unknown';
-  final PathProviderLinux _provider = PathProviderLinux();
+  String _tempDirectory = 'Unknown';
+  String _downloadsDirectory = 'Unknown';
+  String _appSupportDirectory = 'Unknown';
+  String _documentsDirectory = 'Unknown';
 
   @override
   void initState() {
@@ -29,36 +28,32 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initDirectories() async {
-    String? tempDirectory;
-    String? downloadsDirectory;
-    String? appSupportDirectory;
-    String? documentsDirectory;
+    String tempDirectory;
+    String downloadsDirectory;
+    String appSupportDirectory;
+    String documentsDirectory;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      tempDirectory = await _provider.getTemporaryPath();
-    } on PlatformException catch (e, stackTrace) {
+      tempDirectory = (await getTemporaryDirectory()).path;
+    } on PlatformException {
       tempDirectory = 'Failed to get temp directory.';
-      print('$tempDirectory $e $stackTrace');
     }
     try {
-      downloadsDirectory = await _provider.getDownloadsPath();
-    } on PlatformException catch (e, stackTrace) {
+      downloadsDirectory = (await getDownloadsDirectory()).path;
+    } on PlatformException {
       downloadsDirectory = 'Failed to get downloads directory.';
-      print('$downloadsDirectory $e $stackTrace');
     }
 
     try {
-      documentsDirectory = await _provider.getApplicationDocumentsPath();
-    } on PlatformException catch (e, stackTrace) {
+      documentsDirectory = (await getApplicationDocumentsDirectory()).path;
+    } on PlatformException {
       documentsDirectory = 'Failed to get documents directory.';
-      print('$documentsDirectory $e $stackTrace');
     }
 
     try {
-      appSupportDirectory = await _provider.getApplicationSupportPath();
-    } on PlatformException catch (e, stackTrace) {
+      appSupportDirectory = (await getApplicationSupportDirectory()).path;
+    } on PlatformException {
       appSupportDirectory = 'Failed to get documents directory.';
-      print('$appSupportDirectory $e $stackTrace');
     }
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling

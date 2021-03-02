@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @dart = 2.9
-
 import 'package:android_intent/flag.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,11 +12,8 @@ import 'package:platform/platform.dart';
 void main() {
   AndroidIntent androidIntent;
   MockMethodChannel mockChannel;
-
   setUp(() {
     mockChannel = MockMethodChannel();
-    when(mockChannel.invokeMethod<bool>('canResolveActivity', any))
-        .thenAnswer((realInvocation) async => true);
   });
 
   group('AndroidIntent', () {

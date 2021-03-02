@@ -78,20 +78,11 @@ class DemoAppState extends State<DemoApp> {
                   const Padding(padding: EdgeInsets.only(top: 12.0)),
                   Builder(
                     builder: (BuildContext context) {
-                      return ElevatedButton(
+                      return RaisedButton(
                         child: const Text('Share'),
                         onPressed: text.isEmpty && imagePaths.isEmpty
                             ? null
                             : () => _onShare(context),
-                      );
-                    },
-                  ),
-                  const Padding(padding: EdgeInsets.only(top: 12.0)),
-                  Builder(
-                    builder: (BuildContext context) {
-                      return ElevatedButton(
-                        child: const Text('Share With Empty Origin'),
-                        onPressed: () => _onShareWithEmptyOrigin(context),
                       );
                     },
                   ),
@@ -110,13 +101,13 @@ class DemoAppState extends State<DemoApp> {
 
   _onShare(BuildContext context) async {
     // A builder is used to retrieve the context immediately
-    // surrounding the ElevatedButton.
+    // surrounding the RaisedButton.
     //
     // The context's `findRenderObject` returns the first
     // RenderObject in its descendent tree when it's not
-    // a RenderObjectWidget. The ElevatedButton's RenderObject
+    // a RenderObjectWidget. The RaisedButton's RenderObject
     // has its position and size after it's built.
-    final RenderBox box = context.findRenderObject() as RenderBox;
+    final RenderBox box = context.findRenderObject();
 
     if (imagePaths.isNotEmpty) {
       await Share.shareFiles(imagePaths,
@@ -128,9 +119,5 @@ class DemoAppState extends State<DemoApp> {
           subject: subject,
           sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
     }
-  }
-
-  _onShareWithEmptyOrigin(BuildContext context) async {
-    await Share.share("text");
   }
 }

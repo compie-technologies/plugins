@@ -15,7 +15,7 @@ void main() {
     test('Cannot be implemented with `implements`', () {
       expect(() {
         GoogleSignInPlatform.instance = ImplementsGoogleSignInPlatform();
-      }, throwsA(isA<Error>()));
+      }, throwsAssertionError);
     });
 
     test('Can be extended', () {
@@ -23,14 +23,12 @@ void main() {
     });
 
     test('Can be mocked with `implements`', () {
-      GoogleSignInPlatform.instance = ImplementsWithIsMock();
+      final ImplementsGoogleSignInPlatform mock =
+          ImplementsGoogleSignInPlatform();
+      when(mock.isMock).thenReturn(true);
+      GoogleSignInPlatform.instance = mock;
     });
   });
-}
-
-class ImplementsWithIsMock extends Mock implements GoogleSignInPlatform {
-  @override
-  bool get isMock => true;
 }
 
 class ImplementsGoogleSignInPlatform extends Mock

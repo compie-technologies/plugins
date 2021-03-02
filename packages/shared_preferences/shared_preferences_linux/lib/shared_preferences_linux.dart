@@ -20,17 +20,16 @@ class SharedPreferencesLinux extends SharedPreferencesStorePlatform {
   static SharedPreferencesLinux instance = SharedPreferencesLinux();
 
   /// Local copy of preferences
-  Map<String, Object>? _cachedPreferences;
+  Map<String, Object> _cachedPreferences;
 
   /// File system used to store to disk. Exposed for testing only.
   @visibleForTesting
   FileSystem fs = LocalFileSystem();
 
   /// Gets the file where the preferences are stored.
-  Future<File?> _getLocalDataFile() async {
+  Future<File> _getLocalDataFile() async {
     final pathProvider = PathProviderLinux();
     final directory = await pathProvider.getApplicationSupportPath();
-    if (directory == null) return null;
     return fs.file(path.join(directory, 'shared_preferences.json'));
   }
 
@@ -38,19 +37,19 @@ class SharedPreferencesLinux extends SharedPreferencesStorePlatform {
   /// maintained in memory.
   Future<Map<String, Object>> _readPreferences() async {
     if (_cachedPreferences != null) {
-      return _cachedPreferences!;
+      return _cachedPreferences;
     }
 
-    Map<String, Object> preferences = {};
-    final File? localDataFile = await _getLocalDataFile();
-    if (localDataFile != null && localDataFile.existsSync()) {
+    _cachedPreferences = {};
+    var localDataFile = await _getLocalDataFile();
+    if (localDataFile.existsSync()) {
       String stringMap = localDataFile.readAsStringSync();
       if (stringMap.isNotEmpty) {
-        preferences = json.decode(stringMap).cast<String, Object>();
+        _cachedPreferences = json.decode(stringMap) as Map<String, Object>;
       }
     }
-    _cachedPreferences = preferences;
-    return preferences;
+
+    return _cachedPreferences;
   }
 
   /// Writes the cached preferences to disk. Returns [true] if the operation
@@ -58,10 +57,6 @@ class SharedPreferencesLinux extends SharedPreferencesStorePlatform {
   Future<bool> _writePreferences(Map<String, Object> preferences) async {
     try {
       var localDataFile = await _getLocalDataFile();
-      if (localDataFile == null) {
-        print("Unable to determine where to write preferences.");
-        return false;
-      }
       if (!localDataFile.existsSync()) {
         localDataFile.createSync(recursive: true);
       }

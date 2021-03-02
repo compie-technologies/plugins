@@ -13,6 +13,7 @@ import android.net.Network;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import androidx.annotation.RequiresApi;
 import io.flutter.plugin.common.EventChannel;
 
 /**
@@ -23,16 +24,15 @@ import io.flutter.plugin.common.EventChannel;
  * io.flutter.plugin.common.EventChannel#setStreamHandler(io.flutter.plugin.common.EventChannel.StreamHandler)}
  * to set up the receiver.
  */
-public class ConnectivityBroadcastReceiver extends BroadcastReceiver
+class ConnectivityBroadcastReceiver extends BroadcastReceiver
     implements EventChannel.StreamHandler {
   private Context context;
   private Connectivity connectivity;
   private EventChannel.EventSink events;
   private Handler mainHandler = new Handler(Looper.getMainLooper());
-  private ConnectivityManager.NetworkCallback networkCallback;
   public static final String CONNECTIVITY_ACTION = "android.net.conn.CONNECTIVITY_CHANGE";
 
-  public ConnectivityBroadcastReceiver(Context context, Connectivity connectivity) {
+  ConnectivityBroadcastReceiver(Context context, Connectivity connectivity) {
     this.context = context;
     this.connectivity = connectivity;
   }
@@ -41,19 +41,7 @@ public class ConnectivityBroadcastReceiver extends BroadcastReceiver
   public void onListen(Object arguments, EventChannel.EventSink events) {
     this.events = events;
     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      networkCallback =
-          new ConnectivityManager.NetworkCallback() {
-            @Override
-            public void onAvailable(Network network) {
-              sendEvent();
-            }
-
-            @Override
-            public void onLost(Network network) {
-              sendEvent();
-            }
-          };
-      connectivity.getConnectivityManager().registerDefaultNetworkCallback(networkCallback);
+      connectivity.getConnectivityManager().registerDefaultNetworkCallback(getNetworkCallback());
     } else {
       context.registerReceiver(this, new IntentFilter(CONNECTIVITY_ACTION));
     }
@@ -62,10 +50,7 @@ public class ConnectivityBroadcastReceiver extends BroadcastReceiver
   @Override
   public void onCancel(Object arguments) {
     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      if (networkCallback != null) {
-        connectivity.getConnectivityManager().unregisterNetworkCallback(networkCallback);
-        networkCallback = null;
-      }
+      connectivity.getConnectivityManager().unregisterNetworkCallback(getNetworkCallback());
     } else {
       context.unregisterReceiver(this);
     }
@@ -78,8 +63,19 @@ public class ConnectivityBroadcastReceiver extends BroadcastReceiver
     }
   }
 
-  public ConnectivityManager.NetworkCallback getNetworkCallback() {
-    return networkCallback;
+  @RequiresApi(api = Build.VERSION_CODES.N)
+  ConnectivityManager.NetworkCallback getNetworkCallback() {
+    return new ConnectivityManager.NetworkCallback() {
+      @Override
+      public void onAvailable(Network network) {
+        sendEvent();
+      }
+
+      @Override
+      public void onLost(Network network) {
+        sendEvent();
+      }
+    };
   }
 
   private void sendEvent() {

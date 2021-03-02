@@ -41,7 +41,8 @@ List<Caption> _parseCaptionsFromSubRipString(String file) {
       end: startAndEnd.end,
       text: text,
     );
-    if (newCaption.start != newCaption.end) {
+
+    if (newCaption.start != null && newCaption.end != null) {
       captions.add(newCaption);
     }
   }
@@ -63,7 +64,7 @@ class _StartAndEnd {
         RegExp(_subRipTimeStamp + _subRipArrow + _subRipTimeStamp);
 
     if (!format.hasMatch(line)) {
-      return _StartAndEnd(Duration.zero, Duration.zero);
+      return _StartAndEnd(null, null);
     }
 
     final List<String> times = line.split(_subRipArrow);
@@ -83,7 +84,7 @@ class _StartAndEnd {
 // Duration(hours: 0, minutes: 1, seconds: 59, milliseconds: 084)
 Duration _parseSubRipTimestamp(String timestampString) {
   if (!RegExp(_subRipTimeStamp).hasMatch(timestampString)) {
-    return Duration.zero;
+    return null;
   }
 
   final List<String> commaSections = timestampString.split(',');

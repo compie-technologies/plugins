@@ -1,7 +1,6 @@
 // Copyright 2019, the Chromium project authors.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
-// @dart=2.9
 
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
@@ -76,12 +75,5 @@ class GoogleMapInspector {
 
   Future<Uint8List> takeSnapshot() async {
     return await _channel.invokeMethod<Uint8List>('map#takeSnapshot');
-  }
-
-  Future<Map<String, dynamic>> getTileOverlayInfo(String id) async {
-    return await _channel.invokeMapMethod<String, dynamic>(
-        'map#getTileOverlayInfo', <String, String>{
-      'tileOverlayId': id,
-    });
   }
 }

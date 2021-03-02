@@ -29,7 +29,7 @@ import io.flutter.plugin.common.MethodCall;
 import java.util.concurrent.Executor;
 
 /**
- * Authenticates the user with biometrics and sends corresponding response back to Flutter.
+ * Authenticates the user with fingerprint and sends corresponding response back to Flutter.
  *
  * <p>One instance per call is generated to ensure readable separation of executable paths across
  * method calls.
@@ -37,8 +37,10 @@ import java.util.concurrent.Executor;
 @SuppressWarnings("deprecation")
 class AuthenticationHelper extends BiometricPrompt.AuthenticationCallback
     implements Application.ActivityLifecycleCallbacks, DefaultLifecycleObserver {
+
   /** The callback that handles the result of this authentication process. */
   interface AuthCompletionHandler {
+
     /** Called when authentication was successful. */
     void onSuccess();
 
@@ -73,32 +75,24 @@ class AuthenticationHelper extends BiometricPrompt.AuthenticationCallback
       Lifecycle lifecycle,
       FragmentActivity activity,
       MethodCall call,
-      AuthCompletionHandler completionHandler,
-      boolean allowCredentials) {
+      AuthCompletionHandler completionHandler) {
     this.lifecycle = lifecycle;
     this.activity = activity;
     this.completionHandler = completionHandler;
     this.call = call;
     this.isAuthSticky = call.argument("stickyAuth");
     this.uiThreadExecutor = new UiThreadExecutor();
-
-    BiometricPrompt.PromptInfo.Builder promptBuilder =
+    this.promptInfo =
         new BiometricPrompt.PromptInfo.Builder()
             .setDescription((String) call.argument("localizedReason"))
             .setTitle((String) call.argument("signInTitle"))
-            .setSubtitle((String) call.argument("biometricHint"))
+            .setSubtitle((String) call.argument("fingerprintHint"))
+            .setNegativeButtonText((String) call.argument("cancelButton"))
             .setConfirmationRequired((Boolean) call.argument("sensitiveTransaction"))
-            .setConfirmationRequired((Boolean) call.argument("sensitiveTransaction"));
-
-    if (allowCredentials) {
-      promptBuilder.setDeviceCredentialAllowed(true);
-    } else {
-      promptBuilder.setNegativeButtonText((String) call.argument("cancelButton"));
-    }
-    this.promptInfo = promptBuilder.build();
+            .build();
   }
 
-  /** Start the biometric listener. */
+  /** Start the fingerprint listener. */
   void authenticate() {
     if (lifecycle != null) {
       lifecycle.addObserver(this);
@@ -109,7 +103,7 @@ class AuthenticationHelper extends BiometricPrompt.AuthenticationCallback
     biometricPrompt.authenticate(promptInfo);
   }
 
-  /** Cancels the biometric authentication. */
+  /** Cancels the fingerprint authentication. */
   void stopAuthentication() {
     if (biometricPrompt != null) {
       biometricPrompt.cancelAuthentication();
@@ -117,7 +111,7 @@ class AuthenticationHelper extends BiometricPrompt.AuthenticationCallback
     }
   }
 
-  /** Stops the biometric listener. */
+  /** Stops the fingerprint listener. */
   private void stop() {
     if (lifecycle != null) {
       lifecycle.removeObserver(this);
@@ -131,28 +125,21 @@ class AuthenticationHelper extends BiometricPrompt.AuthenticationCallback
   public void onAuthenticationError(int errorCode, CharSequence errString) {
     switch (errorCode) {
       case BiometricPrompt.ERROR_NO_DEVICE_CREDENTIAL:
-        if (call.argument("useErrorDialogs")) {
-          showGoToSettingsDialog(
-              (String) call.argument("deviceCredentialsRequired"),
-              (String) call.argument("deviceCredentialsSetupDescription"));
-          return;
-        }
-        completionHandler.onError("NotAvailable", "Security credentials not available.");
+        completionHandler.onError(
+            "PasscodeNotSet",
+            "Phone not secured by PIN, pattern or password, or SIM is currently locked.");
         break;
       case BiometricPrompt.ERROR_NO_SPACE:
       case BiometricPrompt.ERROR_NO_BIOMETRICS:
-        if (promptInfo.isDeviceCredentialAllowed()) return;
         if (call.argument("useErrorDialogs")) {
-          showGoToSettingsDialog(
-              (String) call.argument("biometricRequired"),
-              (String) call.argument("goToSettingDescription"));
+          showGoToSettingsDialog();
           return;
         }
         completionHandler.onError("NotEnrolled", "No Biometrics enrolled on this device.");
         break;
       case BiometricPrompt.ERROR_HW_UNAVAILABLE:
       case BiometricPrompt.ERROR_HW_NOT_PRESENT:
-        completionHandler.onError("NotAvailable", "Security credentials not available.");
+        completionHandler.onError("NotAvailable", "Biometrics is not available on this device.");
         break;
       case BiometricPrompt.ERROR_LOCKOUT:
         completionHandler.onError(
@@ -189,7 +176,7 @@ class AuthenticationHelper extends BiometricPrompt.AuthenticationCallback
   public void onAuthenticationFailed() {}
 
   /**
-   * If the activity is paused, we keep track because biometric dialog simply returns "User
+   * If the activity is paused, we keep track because fingerprint dialog simply returns "User
    * cancelled" when the activity is paused.
    */
   @Override
@@ -228,12 +215,12 @@ class AuthenticationHelper extends BiometricPrompt.AuthenticationCallback
 
   // Suppress inflateParams lint because dialogs do not need to attach to a parent view.
   @SuppressLint("InflateParams")
-  private void showGoToSettingsDialog(String title, String descriptionText) {
+  private void showGoToSettingsDialog() {
     View view = LayoutInflater.from(activity).inflate(R.layout.go_to_setting, null, false);
     TextView message = (TextView) view.findViewById(R.id.fingerprint_required);
     TextView description = (TextView) view.findViewById(R.id.go_to_setting_description);
-    message.setText(title);
-    description.setText(descriptionText);
+    message.setText((String) call.argument("fingerprintRequired"));
+    description.setText((String) call.argument("goToSettingDescription"));
     Context context = new ContextThemeWrapper(activity, R.style.AlertDialogCustom);
     OnClickListener goToSettingHandler =
         new OnClickListener() {

@@ -20,7 +20,6 @@ import 'place_polygon.dart';
 import 'place_polyline.dart';
 import 'scrolling_map.dart';
 import 'snapshot.dart';
-import 'tile_overlay.dart';
 
 final List<GoogleMapExampleAppPage> _allPages = <GoogleMapExampleAppPage>[
   MapUiPage(),
@@ -37,7 +36,6 @@ final List<GoogleMapExampleAppPage> _allPages = <GoogleMapExampleAppPage>[
   PaddingPage(),
   SnapshotPage(),
   LiteModePage(),
-  TileOverlayPage(),
 ];
 
 class MapsDemo extends StatelessWidget {

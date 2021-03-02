@@ -29,12 +29,10 @@ const Map<String, dynamic> kDefaultResponses = <String, dynamic>{
   'disconnect': null,
   'isSignedIn': true,
   'getTokens': kTokenData,
-  'requestScopes': true,
 };
 
-final GoogleSignInUserData? kUser = getUserDataFromMap(kUserData);
-final GoogleSignInTokenData? kToken =
-    getTokenDataFromMap(kTokenData as Map<String, dynamic>);
+final GoogleSignInUserData kUser = getUserDataFromMap(kUserData);
+final GoogleSignInTokenData kToken = getTokenDataFromMap(kTokenData);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -44,8 +42,7 @@ void main() {
     final MethodChannel channel = googleSignIn.channel;
 
     final List<MethodCall> log = <MethodCall>[];
-    late Map<String, dynamic>
-        responses; // Some tests mutate some kDefaultResponses
+    Map<String, dynamic> responses; // Some tests mutate some kDefaultResponses
 
     setUp(() {
       responses = Map<String, dynamic>.from(kDefaultResponses);

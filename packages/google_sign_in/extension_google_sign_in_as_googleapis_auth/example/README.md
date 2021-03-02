@@ -5,4 +5,4 @@ Demonstrates how to use the google_sign_in plugin with the `googleapis` package.
 ## Getting Started
 
 For help getting started with Flutter, view our online
-[documentation](https://flutter.dev/).
+[documentation](http://flutter.io/).

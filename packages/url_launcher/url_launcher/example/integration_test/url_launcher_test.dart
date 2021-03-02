@@ -2,9 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// TODO(egarciad): Remove once integration_test is migrated to null safety.
-// @dart = 2.9
-
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -15,7 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('canLaunch', (WidgetTester _) async {
+  test('canLaunch', () async {
     expect(await canLaunch('randomstring'), false);
 
     // Generally all devices should have some default browser.

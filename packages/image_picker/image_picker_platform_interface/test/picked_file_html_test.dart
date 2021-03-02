@@ -6,12 +6,13 @@
 
 import 'dart:convert';
 import 'dart:html' as html;
+import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 
 final String expectedStringContents = 'Hello, world!';
-final List<int> bytes = utf8.encode(expectedStringContents);
+final Uint8List bytes = utf8.encode(expectedStringContents);
 final html.File textFile = html.File([bytes], 'hello.txt');
 final String textFileUrl = html.Url.createObjectUrl(textFile);
 

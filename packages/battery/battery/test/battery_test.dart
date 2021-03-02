@@ -4,15 +4,15 @@
 
 import 'dart:async';
 
-import 'package:battery/battery.dart';
 import 'package:battery_platform_interface/battery_platform_interface.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:test/fake.dart';
+import 'package:test/test.dart';
+import 'package:battery/battery.dart';
+import 'package:mockito/mockito.dart';
 
 void main() {
   group('battery', () {
-    late Battery battery;
+    Battery battery;
     MockBatteryPlatform fakePlatform;
     setUp(() async {
       fakePlatform = MockBatteryPlatform();
@@ -30,7 +30,7 @@ void main() {
   });
 }
 
-class MockBatteryPlatform extends Fake
+class MockBatteryPlatform extends Mock
     with MockPlatformInterfaceMixin
     implements BatteryPlatform {
   Future<int> batteryLevel() async {

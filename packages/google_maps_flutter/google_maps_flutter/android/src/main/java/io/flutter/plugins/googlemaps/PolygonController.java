@@ -52,10 +52,6 @@ class PolygonController implements PolygonOptionsSink {
     polygon.setPoints(points);
   }
 
-  public void setHoles(List<List<LatLng>> holes) {
-    polygon.setHoles(holes);
-  }
-
   @Override
   public void setVisible(boolean visible) {
     polygon.setVisible(visible);

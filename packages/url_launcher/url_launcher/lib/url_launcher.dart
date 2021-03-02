@@ -62,15 +62,16 @@ import 'package:url_launcher_platform_interface/url_launcher_platform_interface.
 /// is set to true and the universal link failed to launch.
 Future<bool> launch(
   String urlString, {
-  bool? forceSafariVC,
-  bool forceWebView = false,
-  bool enableJavaScript = false,
-  bool enableDomStorage = false,
-  bool universalLinksOnly = false,
-  Map<String, String> headers = const <String, String>{},
-  Brightness? statusBarBrightness,
-  String? webOnlyWindowName,
+  bool forceSafariVC,
+  bool forceWebView,
+  bool enableJavaScript,
+  bool enableDomStorage,
+  bool universalLinksOnly,
+  Map<String, String> headers,
+  Brightness statusBarBrightness,
+  String webOnlyWindowName,
 }) async {
+  assert(urlString != null);
   final Uri url = Uri.parse(urlString.trimLeft());
   final bool isWebURL = url.scheme == 'http' || url.scheme == 'https';
   if ((forceSafariVC == true || forceWebView == true) && !isWebURL) {
@@ -83,32 +84,29 @@ Future<bool> launch(
   /// [true] so that ui is automatically computed if [statusBarBrightness] is set.
   bool previousAutomaticSystemUiAdjustment = true;
   if (statusBarBrightness != null &&
-      defaultTargetPlatform == TargetPlatform.iOS &&
-      WidgetsBinding.instance != null) {
+      defaultTargetPlatform == TargetPlatform.iOS) {
     previousAutomaticSystemUiAdjustment =
-        WidgetsBinding.instance!.renderView.automaticSystemUiAdjustment;
-    WidgetsBinding.instance!.renderView.automaticSystemUiAdjustment = false;
+        WidgetsBinding.instance.renderView.automaticSystemUiAdjustment;
+    WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
     SystemChrome.setSystemUIOverlayStyle(statusBarBrightness == Brightness.light
         ? SystemUiOverlayStyle.dark
         : SystemUiOverlayStyle.light);
   }
-
   final bool result = await UrlLauncherPlatform.instance.launch(
     urlString,
     useSafariVC: forceSafariVC ?? isWebURL,
-    useWebView: forceWebView,
-    enableJavaScript: enableJavaScript,
-    enableDomStorage: enableDomStorage,
-    universalLinksOnly: universalLinksOnly,
-    headers: headers,
+    useWebView: forceWebView ?? false,
+    enableJavaScript: enableJavaScript ?? false,
+    enableDomStorage: enableDomStorage ?? false,
+    universalLinksOnly: universalLinksOnly ?? false,
+    headers: headers ?? <String, String>{},
     webOnlyWindowName: webOnlyWindowName,
   );
-
-  if (statusBarBrightness != null && WidgetsBinding.instance != null) {
-    WidgetsBinding.instance!.renderView.automaticSystemUiAdjustment =
+  assert(previousAutomaticSystemUiAdjustment != null);
+  if (statusBarBrightness != null) {
+    WidgetsBinding.instance.renderView.automaticSystemUiAdjustment =
         previousAutomaticSystemUiAdjustment;
   }
-
   return result;
 }
 
@@ -120,6 +118,9 @@ Future<bool> launch(
 /// For more information see the [Managing package visibility](https://developer.android.com/training/basics/intents/package-visibility)
 /// article in the Android docs.
 Future<bool> canLaunch(String urlString) async {
+  if (urlString == null) {
+    return false;
+  }
   return await UrlLauncherPlatform.instance.canLaunch(urlString);
 }
 

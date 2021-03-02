@@ -1,3 +1,34 @@
+## 2.0.0
+
+* Migration to null-safety.
+* Added support for progress tracking.
+* Add section to the wiki explaining how to use Material components.
+* Update integration test to workaround an iOS 14 issue with `evaluateJavascript`.
+* Fix `onWebResourceError` on iOS.
+* Fix outdated links across a number of markdown files ([#3276](https://github.com/flutter/plugins/pull/3276))
+* Added `allowsInlineMediaPlayback` property.
+
+## 1.0.8
+
+* Update Flutter SDK constraint.
+
+## 1.0.7
+
+* Minor documentation update to indicate known issue on iOS 13.4 and 13.5.
+  * See: https://github.com/flutter/flutter/issues/53490
+
+## 1.0.6
+
+* Invoke the WebView.onWebResourceError on iOS when the webview content process crashes.
+
+## 1.0.5
+
+* Fix example in the readme.
+
+## 1.0.4
+
+* Suppress the `deprecated_member_use` warning in the example app for `ScaffoldMessenger.showSnackBar`.
+
 ## 1.0.3
 
 * Update android compileSdkVersion to 29.
